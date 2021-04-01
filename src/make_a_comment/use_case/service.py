@@ -2,7 +2,7 @@ from copy import deepcopy
 from typing import List
 from werkzeug.security import check_password_hash
 
-from make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
+from src.make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
 
 from src.make_a_comment.utils.jwt_handler import (generate_access_token,
                                                   get_jwt_payload,

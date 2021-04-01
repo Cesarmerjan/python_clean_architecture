@@ -14,7 +14,7 @@ from src.make_a_comment.utils.jwt_handler import validate_access_token
 from src.make_a_comment.adapters.unit_of_work.comment_uow import CommentUoW
 from src.make_a_comment.adapters.unit_of_work.user_uow import UserUoW
 
-from make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
+from src.make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
 
 
 @contextlib.contextmanager

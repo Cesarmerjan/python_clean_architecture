@@ -16,9 +16,9 @@ from . import service
 from marshmallow import ValidationError
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError, NoResultFound
 from jwt.exceptions import DecodeError, InvalidSignatureError, ExpiredSignatureError, InvalidTokenError
-from make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
-from make_a_comment.exceptions.user_uuid_is_not_in_the_access_token_payload import UserUuidIsNotInAccessTokenPayload
-from make_a_comment.exceptions.missing_data_on_request import (
+from src.make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
+from src.make_a_comment.exceptions.user_uuid_is_not_in_the_access_token_payload import UserUuidIsNotInAccessTokenPayload
+from src.make_a_comment.exceptions.missing_data_on_request import (
     MissingCommentUuid,
     MissingNewCommentText,
     MissingUserUuid,

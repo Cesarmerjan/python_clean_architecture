@@ -5,7 +5,7 @@ from typing import NewType
 from datetime import datetime
 import jwt
 
-from make_a_comment.exceptions.access_token_required import AccessTokenRequired
+from src.make_a_comment.exceptions.access_token_required import AccessTokenRequired
 
 from src.config import SECRET_KEY
 
