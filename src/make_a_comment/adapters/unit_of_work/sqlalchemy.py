@@ -1,3 +1,4 @@
+from sqlalchemy.orm import Session
 from .interface import UoWInterface
 from src.make_a_comment.adapters.repository.interface import RepositoryInterface
 

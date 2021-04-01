@@ -17,7 +17,7 @@ setup(
     description="Clean Architecture with Python",
     url="",
     license="",
-    package_dir={"": "src"}
+    package_dir={"": "src"},
     packages=find_packages("src", exclude=[".venv", "tests"]),
     include_package_data=True,
     install_requires=read("requirements/prod.txt"),

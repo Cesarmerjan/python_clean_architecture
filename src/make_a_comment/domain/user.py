@@ -1,3 +1,4 @@
+from typing import Set
 import uuid
 from werkzeug.security import generate_password_hash
 from .comment import Comment
