@@ -22,9 +22,9 @@ Harry J.W.Percival
 
 ## Clean Architecture
 ### Diagram
-![Alt text](clean_architecture_diagram.jpg?raw=true "Clean Architecture Diagram")
+![Alt text](images/clean_architecture_diagram.jpg?raw=true "Clean Architecture Diagram")
 ### Flow Chart
-![Alt text](clean_architecture_flow_chart.png?raw=true "Clean Architecture Flow Chart.png")
+![Alt text](images/clean_architecture_flow_chart.png?raw=true "Clean Architecture Flow Chart.png")
 
 
 # Project
@@ -47,11 +47,11 @@ It must be possible to interact with the system via API or via CLI.
 
 
 ## Usa Case Diagram
-![Alt text](class_diagram.png?raw=true "Class Diagram")
+![Alt text](images/class_diagram.png?raw=true "Class Diagram")
 
 
 ## Class Diagram
-![Alt text](use_case.png?raw=true "Use Case Diagram")
+![Alt text](images/use_case.png?raw=true "Use Case Diagram")
 
 
 ## ValueObjects

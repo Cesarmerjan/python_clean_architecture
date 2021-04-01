@@ -17,12 +17,11 @@ setup(
     description="Clean Architecture with Python",
     url="",
     license="",
-    packages=["make_a_comment"],
-    packages=find_packages(exclude=[".venv", "tests"]),
+    package_dir={"": "src"}
+    packages=find_packages("src", exclude=[".venv", "tests"]),
     include_package_data=True,
     install_requires=read("requirements/prod.txt"),
     extras_require={
         "dev": read("requirements/dev.txt")
     }
-
 )

@@ -15,3 +15,6 @@ itests:
 
 e2etests:
 	pytest tests/e2e
+
+alltests:
+	pytest

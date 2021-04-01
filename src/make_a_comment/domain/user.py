@@ -1,16 +1,17 @@
 import uuid
 from werkzeug.security import generate_password_hash
-from src.make_a_comment.domain.comment import Comment
+from .comment import Comment
 
 
 class User:
 
-    def __init__(self, name: str, email: str, password: str):
+    def __init__(self, name: str, email: str, password: str, admin: bool = False):
         self.uuid = str(uuid.uuid4())  # 36 char
         self.name = name
         self.email = email
         self.password_hash = generate_password_hash(password)  # 128 char
         self.comments = set()  # type: Set[Comment]
+        self.admin = admin
 
     def __repr__(self):
         return f"<User {self.uuid}>"
