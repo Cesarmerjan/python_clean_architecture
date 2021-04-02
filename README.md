@@ -1,3 +1,5 @@
+# Working in progress!
+
 # Clean Architecture with Python
 
 The purpose of this repository is to make a simple example of the implementation of a python project with Clean Architecture
@@ -58,4 +60,36 @@ It must be possible to interact with the system via API or via CLI.
 Comment
 
 ## Entities
-User 
+User
+
+## Layers Responsibility
+### Domain
+Responsible for representing the entities or object values of the system
+### Use Case
+#### Service
+Responsible for the business rules
+#### Interactor
+Responsible for managing interaction with the business rules (service)
+### Serializer
+Responsible for defining the data structure of the request and the payload of the response
+### Adapters (Port & Adapters)
+Responsible for communication with external elements 
+#### Drivers
+Responsible for communication between the application and others "devices"
+#### ORM
+Responsible for mapping objects with database tables
+#### Repository
+Responsible for data access logic 
+#### Unit of Work
+Responsible for the atomicity (transactions, concurrency, commit and rollback)
+#### Response
+Responsible for defining the response structure of the application 
+#### Controllers
+Responsible for managing requests and responses flow
+### Exceptions
+Responsible for custom exceptions
+### Utils
+Responsible for support modules fo the system
+### Views
+Responsible for the user interface
+
