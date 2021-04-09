@@ -1,0 +1,1 @@
+"""Responsible for custom exceptions"""

@@ -1,3 +1,4 @@
+"""Responsible for the business rules"""
 from copy import deepcopy
 from typing import List
 from werkzeug.security import check_password_hash

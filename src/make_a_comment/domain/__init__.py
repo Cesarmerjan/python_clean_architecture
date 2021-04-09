@@ -1,1 +1,1 @@
-"""Defines the Entities and ValeuObjects of the system"""
+"""Responsible for representing the entities or object values of the system"""

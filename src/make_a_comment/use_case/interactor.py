@@ -1,4 +1,4 @@
-"""parse the request and build the response"""
+"""Responsible for managing interaction with the business rules (service). Parse the request and build the response"""
 import traceback
 import logging
 import logging.config
@@ -265,6 +265,8 @@ def view_all_comments(comment_uow: UoWInterface) -> List[Comment]:
 
 
 def user_login(request_json, user_uow: UoWInterface) -> str:
+
+    # Criar a resposta com o cabeçalho setando os hhtponly cookies ao invez de setar eles com o flask
 
     extra_loggin = {"function": "user_login"}
 

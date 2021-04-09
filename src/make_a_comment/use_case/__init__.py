@@ -1,1 +1,1 @@
-"""Implements business rules"""
+"""Responsible for the business rules"""

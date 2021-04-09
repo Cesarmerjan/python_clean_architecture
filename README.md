@@ -48,7 +48,7 @@ The system must be installable.
 It must be possible to interact with the system via API or via CLI.
 
 
-## Usa Case Diagram
+## Use Case Diagram
 ![Alt text](images/class_diagram.png?raw=true "Class Diagram")
 
 
@@ -89,7 +89,7 @@ Responsible for managing requests and responses flow
 ### Exceptions
 Responsible for custom exceptions
 ### Utils
-Responsible for support modules fo the system
+Responsible for support modules of the system
 ### Views
 Responsible for the user interface
 

@@ -1,1 +1,1 @@
-"""Deals with the atomicity of the database """
+"""Responsible for the atomicity (transactions, concurrency, commit and rollback)"""

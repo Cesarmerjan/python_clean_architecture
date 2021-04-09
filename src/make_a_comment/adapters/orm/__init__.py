@@ -1,3 +1,4 @@
+"""Responsible for mapping objects with database tables"""
 from sqlalchemy import MetaData
 
 
