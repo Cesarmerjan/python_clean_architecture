@@ -10,7 +10,7 @@ from src.make_a_comment.adapters.orm import start_mapper, metadata
 
 from src.make_a_comment.domain.user import User
 
-from src.make_a_comment.adapters.controllers.api import create_api
+from src.make_a_comment.infrastructure.api import create_api
 
 
 @pytest.fixture(scope="function")

@@ -152,20 +152,20 @@ def test_can_service_make_a_user_login(user_data, session_factory):
                 user_uow=user_uow)
 
 
-def test_can_service_get_payload_from_jwt(user_data, session_factory):
-    with create_a_user_and_persist_it(user_data, session_factory) as user:
-        user_uow = UserUoW(session_factory=session_factory)
+# def test_can_service_get_payload_from_jwt(user_data, session_factory):
+#     with create_a_user_and_persist_it(user_data, session_factory) as user:
+#         user_uow = UserUoW(session_factory=session_factory)
 
-        access_token = service.user_login(
-            email=user.email, password=user_data["password"],
-            user_uow=user_uow)
+#         access_token = service.user_login(
+#             email=user.email, password=user_data["password"],
+#             user_uow=user_uow)
 
-        payload = service.get_payload_from_jwt(access_token)
-        user_uuid = payload["user_uuid"]
-        assert user_uuid == user.uuid
+#         payload = service.get_payload_from_jwt(access_token)
+#         user_uuid = payload["user_uuid"]
+#         assert user_uuid == user.uuid
 
-        with pytest.raises(DecodeError):
-            service.get_payload_from_jwt("wrong")
+#         with pytest.raises(DecodeError):
+#             service.get_payload_from_jwt("wrong")
 
 
 def test_can_service_verify_user_password(user_data, session_factory):
@@ -177,15 +177,15 @@ def test_can_service_verify_user_password(user_data, session_factory):
             user.password_hash, "wrong")
 
 
-def test_can_service_verify_access_token(user_data, session_factory):
-    with create_a_user_and_persist_it(user_data, session_factory) as user:
-        user_uow = UserUoW(session_factory=session_factory)
+# def test_can_service_verify_access_token(user_data, session_factory):
+#     with create_a_user_and_persist_it(user_data, session_factory) as user:
+#         user_uow = UserUoW(session_factory=session_factory)
 
-        access_token = service.user_login(
-            email=user.email, password=user_data["password"],
-            user_uow=user_uow)
+#         access_token = service.user_login(
+#             email=user.email, password=user_data["password"],
+#             user_uow=user_uow)
 
-        assert service.verify_access_token(access_token)
+#         assert service.verify_access_token(access_token)
 
-        with pytest.raises(DecodeError):
-            service.verify_access_token("wrong")
+#         with pytest.raises(DecodeError):
+#             service.verify_access_token("wrong")

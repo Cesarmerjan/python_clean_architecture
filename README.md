@@ -74,8 +74,6 @@ Responsible for managing interaction with the business rules (service)
 Responsible for defining the data structure of the request and the payload of the response
 ### Adapters (Port & Adapters)
 Responsible for communication with external elements 
-#### Drivers
-Responsible for communication between the application and others "devices"
 #### ORM
 Responsible for mapping objects with database tables
 #### Repository
@@ -83,13 +81,21 @@ Responsible for data access logic
 #### Unit of Work
 Responsible for the atomicity (transactions, concurrency, commit and rollback)
 #### Response
-Responsible for defining the response structure of the application 
+Responsible for defining the response structure of the application
+#### Presenter
+Responsible for normalize the request (inputs) and deside the response(outputs)
 #### Controllers
-Responsible for managing requests and responses flow
+Responsible for processing the normalize request with the bussiness logic
 ### Exceptions
 Responsible for custom exceptions
 ### Utils
 Responsible for support modules of the system
 ### Views
 Responsible for the user interface
+### Infrastructure
+Responsible for all I/O components. The UI, database, frameworks, devices, etc.
+#### Drivers
+Responsible for communication between the application and others "devices"
+#### REST API
+#### CLI
 

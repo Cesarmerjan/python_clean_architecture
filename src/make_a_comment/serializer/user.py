@@ -24,7 +24,7 @@ class UserSerializer(Schema):
 
     email = fields.Email(required=True, validate=Length(min=10, max=30))
 
-    admin = fields.Bool(required=False, allow_none=False, default=False)
+    admin = fields.Bool(required=False, allow_none=True, default=False)
 
 
 user_serializer = UserSerializer()

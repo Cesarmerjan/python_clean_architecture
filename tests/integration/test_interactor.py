@@ -3,7 +3,7 @@ import contextlib
 from src.make_a_comment.domain.comment import Comment
 from src.make_a_comment.domain.user import User
 
-from src.make_a_comment.use_case import interactor
+from src.make_a_comment.adapters import controller
 
 from src.make_a_comment.utils.jwt_handler import validate_access_token
 
@@ -25,40 +25,43 @@ def create_a_user_and_persist_it(user_data, session_factory):
         session.close()
 
 
-def test_can_interactor_create_a_user(user_data, session_factory):
-    request_json = user_data
+def test_can_controller_create_a_user(user_data, session_factory):
+    data = user_data
     session = session_factory()
     user_uow = UserUoW(session_factory)
-    response = interactor.create_a_user(
-        request_json=request_json, user_uow=user_uow)
+    response = controller.create_a_user(
+        data=data, user_uow=user_uow)
 
-    assert response["name"] == user_data["name"]
-    assert response["email"] == user_data["email"]
+    assert response.http_status_code == 201
 
-    queried_user = session.query(User).filter_by(uuid=response["uuid"]).first()
+    assert response.data["name"] == user_data["name"]
+    assert response.data["email"] == user_data["email"]
 
-    assert queried_user.uuid == response["uuid"]
-    assert queried_user.name == response["name"]
-    assert queried_user.email == response["email"]
+    queried_user = session.query(User).filter_by(
+        uuid=response.data["uuid"]).first()
+
+    assert queried_user.uuid == response.data["uuid"]
+    assert queried_user.name == response.data["name"]
+    assert queried_user.email == response.data["email"]
 
     session.delete(queried_user)
     session.commit()
 
 
-def test_can_interactor_make_a_user_comment(user_data, session_factory):
+def test_can_controller_make_a_user_comment(user_data, session_factory):
 
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
+        data = {"email": user.email,
+                "password": user_data["password"]}
 
-        access_token = interactor.user_login(request_json=request_json,
+        access_token = controller.user_login(data=data,
                                              user_uow=user_uow)
 
-        request_json = {"text": "test_can_interactor_make_an_user_comment"}
-        response = interactor.make_a_user_comment(
-            request_json=request_json, user_uow=user_uow,
+        data = {"text": "test_can_controller_make_an_user_comment"}
+        response = controller.make_a_user_comment(
+            data=data, user_uow=user_uow,
             access_token=access_token)
 
         assert len(user.comments) == 1
@@ -68,97 +71,97 @@ def test_can_interactor_make_a_user_comment(user_data, session_factory):
             assert comment.text == response["text"]
 
 
-def test_can_interactor_get_a_comment_by_uuid(user_data, session_factory):
+def test_can_controller_get_a_comment_by_uuid(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
 
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
+        data = {"email": user.email,
+                "password": user_data["password"]}
 
-        access_token = interactor.user_login(request_json=request_json,
+        access_token = controller.user_login(data=data,
                                              user_uow=user_uow)
 
-        request_json = {"text": "test_can_interactor_get_a_comment_by_uuid"}
-        comment = interactor.make_a_user_comment(
-            request_json, user_uow=user_uow, access_token=access_token)
+        data = {"text": "test_can_controller_get_a_comment_by_uuid"}
+        comment = controller.make_a_user_comment(
+            data, user_uow=user_uow, access_token=access_token)
 
         comment_uow = CommentUoW(session_factory=session_factory)
 
-        request_json = {"comment_uuid": comment["uuid"]}
+        data = {"comment_uuid": comment["uuid"]}
 
-        queried_comment = interactor.get_a_comment_by_uuid(
-            request_json, comment_uow=comment_uow)
+        queried_comment = controller.get_a_comment_by_uuid(
+            data, comment_uow=comment_uow)
 
         assert queried_comment == comment
 
 
-def test_can_interactor_delete_a_comment(user_data, session_factory):
+def test_can_controller_delete_a_comment(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
 
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
+        data = {"email": user.email,
+                "password": user_data["password"]}
 
-        access_token = interactor.user_login(request_json=request_json,
+        access_token = controller.user_login(data=data,
                                              user_uow=user_uow)
 
         initial_numer_of_comments = len(user.comments)
-        request_json = {"text": "test_can_interactor_delete_a_user_comment"}
-        response = interactor.make_a_user_comment(
-            request_json=request_json,
+        data = {"text": "test_can_controller_delete_a_user_comment"}
+        response = controller.make_a_user_comment(
+            data=data,
             user_uow=user_uow,
             access_token=access_token)
 
-        request_json = {"comment_uuid": response["uuid"]}
+        data = {"comment_uuid": response["uuid"]}
         comment_uow = CommentUoW(session_factory=session_factory)
 
-        interactor.delete_a_comment_by_uuid(
-            request_json=request_json, comment_uow=comment_uow,
+        controller.delete_a_comment_by_uuid(
+            data=data, comment_uow=comment_uow,
             access_token=access_token)
 
         assert len(user.comments) == initial_numer_of_comments
 
 
-def test_can_interactor_update_a_comment(user_data, session_factory):
+def test_can_controller_update_a_comment(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
+        data = {"email": user.email,
+                "password": user_data["password"]}
 
-        access_token = interactor.user_login(request_json=request_json,
+        access_token = controller.user_login(data=data,
                                              user_uow=user_uow)
 
-        request_json = {"text": "test_can_interactor_update_a_comment"}
-        response = interactor.make_a_user_comment(
-            request_json=request_json, user_uow=user_uow,
+        data = {"text": "test_can_controller_update_a_comment"}
+        response = controller.make_a_user_comment(
+            data=data, user_uow=user_uow,
             access_token=access_token)
 
         comment_uow = CommentUoW(session_factory=session_factory)
 
-        new_text = request_json["text"] + " updated"
-        request_json = {"new_text": new_text,
-                        "comment_uuid": response["uuid"]}
-        new_comment = interactor.update_a_comment(
-            request_json=request_json,
+        new_text = data["text"] + " updated"
+        data = {"new_text": new_text,
+                "comment_uuid": response["uuid"]}
+        new_comment = controller.update_a_comment(
+            data=data,
             comment_uow=comment_uow, access_token=access_token)
 
-        queried_comment = interactor.get_a_comment_by_uuid(
-            request_json={"comment_uuid": response["uuid"]},
+        queried_comment = controller.get_a_comment_by_uuid(
+            data={"comment_uuid": response["uuid"]},
             comment_uow=comment_uow)
 
         assert queried_comment["text"] == new_text
 
 
-def test_can_interactor_get_a_user_by_uuid(user_data, session_factory):
+def test_can_controller_get_a_user_by_uuid(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"user_uuid": user.uuid}
+        data = {"user_uuid": user.uuid}
 
-        queried_user = interactor.get_a_user_by_uuid(request_json=request_json,
+        queried_user = controller.get_a_user_by_uuid(data=data,
                                                      user_uow=user_uow)
 
         assert queried_user["uuid"] == user.uuid
@@ -166,47 +169,26 @@ def test_can_interactor_get_a_user_by_uuid(user_data, session_factory):
         assert queried_user["email"] == user.email
 
 
-def test_can_interactor_view_all_comments(session_factory):
+def test_can_controller_view_all_comments(session_factory):
     session = session_factory()
     comments = session.query(Comment).all()
     session.close()
     comment_uow = CommentUoW(session_factory=session_factory)
 
-    queried_comments = interactor.view_all_comments(comment_uow=comment_uow)
+    queried_comments = controller.view_all_comments(comment_uow=comment_uow)
 
     assert len(comments) == len(queried_comments)
 
 
-def test_can_interactor_make_a_user_login(user_data, session_factory):
+def test_can_controller_make_a_user_login(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
 
         user_uow = UserUoW(session_factory=session_factory)
 
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
+        data = {"email": user.email,
+                "password": user_data["password"]}
 
-        access_token = interactor.user_login(request_json=request_json,
+        access_token = controller.user_login(data=data,
                                              user_uow=user_uow)
 
         assert validate_access_token(access_token)
-
-
-def test_can_interactor_get_payload_from_jwt(user_data, session_factory):
-    with create_a_user_and_persist_it(user_data, session_factory) as user:
-        user_uow = UserUoW(session_factory=session_factory)
-
-        request_json = {"email": user.email,
-                        "password": user_data["password"]}
-
-        access_token = interactor.user_login(request_json=request_json,
-                                             user_uow=user_uow)
-
-        payload = interactor.get_payload_from_jwt(access_token)
-        user_uuid = payload["user_uuid"]
-        assert user_uuid == user.uuid
-
-
-def test_can_interactor_verify_user_password(user_data, session_factory):
-    with create_a_user_and_persist_it(user_data, session_factory) as user:
-        assert interactor.verify_user_password(
-            user.password_hash, user_data["password"])
