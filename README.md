@@ -28,7 +28,7 @@ Harry J.W.Percival
 ### Flow Chart
 ![Alt text](images/clean_architecture_flow_chart.png?raw=true "Clean Architecture Flow Chart")
 ### Current Architecture Diagram
-![Alt text](images/current_architecture_diagram .png?raw=true "Current Architecture Diagram")
+![Alt text](images/current_architecture_diagram.png?raw=true "Current Architecture Diagram")
  
 # Project
 
