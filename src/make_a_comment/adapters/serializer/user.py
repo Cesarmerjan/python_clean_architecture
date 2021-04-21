@@ -1,11 +1,17 @@
 from marshmallow import Schema, fields
 from marshmallow.validate import Length
-from marshmallow import pre_dump, pre_dump
+from marshmallow import pre_dump
 
 from .comment import CommentSerializer
 
 
 class UserSerializer(Schema):
+    @pre_dump
+    def pre_dump(self, instance, **kwargs):
+        if not instance.admin:
+            instance.admin = False
+        return instance
+
     # dump_only
     uuid = fields.Str(required=True,
                       allow_none=False,
@@ -24,7 +30,8 @@ class UserSerializer(Schema):
 
     email = fields.Email(required=True, validate=Length(min=10, max=30))
 
-    admin = fields.Bool(required=False, allow_none=True, default=False)
+    admin = fields.Bool(required=False, allow_none=True,
+                        default=False, missing=False)
 
 
 user_serializer = UserSerializer()

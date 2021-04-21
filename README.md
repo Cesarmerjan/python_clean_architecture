@@ -26,9 +26,10 @@ Harry J.W.Percival
 ### Diagram
 ![Alt text](images/clean_architecture_diagram.jpg?raw=true "Clean Architecture Diagram")
 ### Flow Chart
-![Alt text](images/clean_architecture_flow_chart.png?raw=true "Clean Architecture Flow Chart.png")
-
-
+![Alt text](images/clean_architecture_flow_chart.png?raw=true "Clean Architecture Flow Chart")
+### Current Architecture Diagram
+![Alt text](images/current_architecture_diagram .png?raw=true "Current Architecture Diagram")
+ 
 # Project
 
 ## Functional Requirements
@@ -83,9 +84,9 @@ Responsible for the atomicity (transactions, concurrency, commit and rollback)
 #### Response
 Responsible for defining the response structure of the application
 #### Presenter
-Responsible for normalize the request (inputs) and deside the response(outputs)
+Responsible for parse the request and deside the response
 #### Controllers
-Responsible for processing the normalize request with the bussiness logic
+Responsible for directing the request to the business rule
 ### Exceptions
 Responsible for custom exceptions
 ### Utils

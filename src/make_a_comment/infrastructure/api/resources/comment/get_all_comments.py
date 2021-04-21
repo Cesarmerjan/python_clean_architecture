@@ -1,18 +1,13 @@
 from flask import request, jsonify, current_app
 from src.make_a_comment.adapters.response.status_code import STATUS_CODE
 from src.make_a_comment.adapters.controller.factory import ControllerFactory
-from src.make_a_comment.utils.jwt_handler import get_jwt_payload
 
 
-def update_a_comment():
+def get_all_comments():
     request_json = request.get_json()
     request_json = {} if not request_json else request_json
 
-    access_token = request.cookies.get("access_token")
-
-    request_json["access_token"] = access_token
-
-    controller = ControllerFactory("update_a_comment",
+    controller = ControllerFactory("get_all_comments",
                                    current_app.session_factory)
 
     response = controller.handle(request_json)

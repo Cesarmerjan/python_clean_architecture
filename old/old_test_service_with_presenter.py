@@ -19,8 +19,6 @@ from src.make_a_comment.adapters.unit_of_work.user_uow import UserUoW
 
 from src.make_a_comment.exceptions.invalid_login_credentials import InvalidLoginCredentials
 
-from src.make_a_comment.adapters.presenter.fake import FakePresenter
-
 
 @contextlib.contextmanager
 def create_a_user_and_persist_it(user_data, session_factory):
@@ -39,8 +37,8 @@ def create_a_user_and_persist_it(user_data, session_factory):
 def test_can_user_service_register_user(user_data, session_factory):
     session = session_factory()
     user_uow = UserUoW(session_factory)
-    user_service = UserService(user_uow, FakePresenter())
-    user = user_service._register_user(**user_data)
+    user_service = UserService(user_uow)
+    user = user_service.register_user(**user_data)
     assert user.name == user_data["name"]
     assert user.email == user_data["email"]
 
@@ -56,9 +54,9 @@ def test_can_user_service_make_a_comment(user_data, session_factory):
 
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
         text = "test_can_user_service_make_a_comment"
-        comment = user_service._make_a_comment(
+        comment = user_service.make_a_comment(
             user_uuid=user.uuid, text=text)
         assert comment in user.comments
 
@@ -67,17 +65,17 @@ def test_can_comment_service_get_a_comment_by_uuid(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
 
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
 
         text = "test_can_comment_service_get_a_comment_by_uuid"
 
-        comment = user_service._make_a_comment(
+        comment = user_service.make_a_comment(
             user_uuid=user.uuid, text=text)
 
         comment_uow = CommentUoW(session_factory=session_factory)
-        comment_service = CommentService(comment_uow, FakePresenter())
+        comment_service = CommentService(comment_uow)
 
-        queried_comment = comment_service._get_comment_by_uuid(
+        queried_comment = comment_service.get_comment_by_uuid(
             comment_uuid=comment.uuid)
 
         assert queried_comment == comment
@@ -87,17 +85,17 @@ def test_can_comment_service_delete_a_comment(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
 
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
 
         initial_numer_of_comments = len(user.comments)
         text = "test_can_comment_service_delete_a_comment"
-        comment = user_service._make_a_comment(
+        comment = user_service.make_a_comment(
             user_uuid=user.uuid, text=text)
 
         comment_uow = CommentUoW(session_factory=session_factory)
-        comment_service = CommentService(comment_uow, FakePresenter())
+        comment_service = CommentService(comment_uow)
 
-        comment_service._delete_comment_by_uuid(
+        comment_service.delete_comment_by_uuid(
             comment_uuid=comment.uuid)
 
         assert len(user.comments) == initial_numer_of_comments
@@ -106,20 +104,20 @@ def test_can_comment_service_delete_a_comment(user_data, session_factory):
 def test_can_comment_service_update_a_comment(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
 
         text = "test_can_comment_service_update_a_comment"
-        comment = user_service._make_a_comment(
+        comment = user_service.make_a_comment(
             user_uuid=user.uuid, text=text)
 
         comment_uow = CommentUoW(session_factory=session_factory)
-        comment_service = CommentService(comment_uow, FakePresenter())
+        comment_service = CommentService(comment_uow)
 
         new_text = text + " updated"
-        new_comment = comment_service._update_comment_by_uuid(
+        new_comment = comment_service.update_comment_by_uuid(
             comment_uuid=comment.uuid, new_text=new_text)
 
-        queried_comment = comment_service._get_comment_by_uuid(
+        queried_comment = comment_service.get_comment_by_uuid(
             comment_uuid=comment.uuid)
 
         assert queried_comment.text == new_text
@@ -128,9 +126,9 @@ def test_can_comment_service_update_a_comment(user_data, session_factory):
 def test_can_user_service_get_user_by_uuid(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
 
-        queried_user = user_service._get_user_by_uuid(user_uuid=user.uuid)
+        queried_user = user_service.get_user_by_uuid(user_uuid=user.uuid)
         assert queried_user == user
 
         try:
@@ -144,9 +142,9 @@ def test_can_service_view_all_comments(session_factory):
     comments = session.query(Comment).all()
     session.close()
     comment_uow = CommentUoW(session_factory=session_factory)
-    comment_service = CommentService(comment_uow, FakePresenter())
+    comment_service = CommentService(comment_uow)
 
-    queried_comments = comment_service._get_all_comments()
+    queried_comments = comment_service.get_all_comments()
 
     assert len(comments) == len(queried_comments)
 
@@ -154,15 +152,15 @@ def test_can_service_view_all_comments(session_factory):
 def test_can_service_make_a_user_login(user_data, session_factory):
     with create_a_user_and_persist_it(user_data, session_factory) as user:
         user_uow = UserUoW(session_factory=session_factory)
-        user_service = UserService(user_uow, FakePresenter())
+        user_service = UserService(user_uow)
 
-        payload = user_service._login(
+        access_token = user_service.login(
             email=user.email, password=user_data["password"])
 
-        assert validate_access_token(payload["access_token"])
+        assert validate_access_token(access_token)
 
         with pytest.raises(InvalidLoginCredentials):
-            user_service._login(
+            user_service.login(
                 email=user.email, password="wrong")
 
 

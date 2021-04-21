@@ -1,17 +1,15 @@
 from flask import request, jsonify, current_app
-from src.make_a_comment.adapters import controller
-from src.make_a_comment.adapters.unit_of_work.user_uow import UserUoW
+from src.make_a_comment.adapters.response.status_code import STATUS_CODE
+from src.make_a_comment.adapters.controller.factory import ControllerFactory
 
 
 def register_user():
     request_json = request.get_json()
+    request_json = {} if not request_json else request_json
 
-    user_uow = UserUoW(current_app.session_factory)
+    controller = ControllerFactory("register_user",
+                                   current_app.session_factory)
 
-    response = controller.create_a_user(request_json,
-                                        user_uow=user_uow)
+    response = controller.handle(request_json)
 
-    if response.data:
-        return jsonify(response.data), response.http_status_code
-    else:
-        return response.message, response.http_status_code
+    return jsonify(response.payload), STATUS_CODE[response.kind]

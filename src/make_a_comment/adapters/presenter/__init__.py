@@ -1,1 +1,1 @@
-"""Responsible for normalize the request (inputs) and deside the response(outputs)"""
+"""Responsible for parse the request and deside the response"""

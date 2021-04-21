@@ -1,25 +1,24 @@
-from typing import Union
-import traceback
-import functools
+import inspect
+from functools import wraps
+
+import jwt
 
 from src.make_a_comment.exceptions.access_token_required import AccessTokenRequired
 from jwt.exceptions import DecodeError, InvalidSignatureError, ExpiredSignatureError, InvalidTokenError
 
 from src.make_a_comment.utils.jwt_handler import ACCESS_TOKEN_BLACKLIST, validate_access_token
 
-from src.make_a_comment.adapters.output.basic import BasicOutput
-
-from src.make_a_comment.utils.logging_handler import file_logger
+ACCESS_TOKEN_NAME: str = "access_token"
 
 
-def login_required(func) -> Union[BasicOutput, 'func']:
-    @ functools.wraps(func)
+def login_required(function) -> callable:
+    @wraps(function)
     def wrapper(*args, **kwargs):
-        access_token = kwargs.get("access_token")
+        access_token = kwargs.get(ACCESS_TOKEN_NAME)
 
         if not access_token:
             args_access_token_index = inspect.getfullargspec(
-                func).args.index("access_token")
+                function).args.index(ACCESS_TOKEN_NAME)
 
             if not args_access_token_index >= len(args):
                 access_token = args[args_access_token_index]
@@ -39,6 +38,6 @@ def login_required(func) -> Union[BasicOutput, 'func']:
         except jwt.exceptions.DecodeError as error:
             raise error
 
-        return func(*args, **kwargs)
+        return function(*args, **kwargs)
 
     return wrapper

@@ -15,7 +15,7 @@ def test_api(api_client):
 
     assert response.status_code == 200
 
-    response = api_client.get("/api/v0/view_all_comments")
+    response = api_client.get("/api/v0/get_all_comments")
 
     assert response.status_code == 200
 

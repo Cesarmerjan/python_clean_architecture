@@ -1,23 +1,23 @@
 from flask import request, jsonify, current_app, make_response
-from src.make_a_comment.adapters import controller
-from src.make_a_comment.adapters.unit_of_work.user_uow import UserUoW
+from src.make_a_comment.adapters.response.status_code import STATUS_CODE
+from src.make_a_comment.adapters.controller.factory import ControllerFactory
 
 
 def login():
     request_json = request.get_json()
+    request_json = {} if not request_json else request_json
 
-    user_uow = UserUoW(current_app.session_factory)
+    controller = ControllerFactory("user_login",
+                                   current_app.session_factory)
 
-    access_token = controller.user_login(request_json,
-                                         user_uow=user_uow)
+    response = controller.handle(request_json)
 
-    response = make_response("ok")
-    response.set_cookie(key="access_token",
-                        value=access_token,
-                        httponly=True)
+    flask_response = make_response(
+        jsonify(response.payload),
+        STATUS_CODE[response.kind])
 
-    return response, 200
+    flask_response.set_cookie(key="access_token",
+                              value=response.payload["access_token"],
+                              httponly=True)
 
-
-# bearer = request.headers.get('Authorization')
-# token = bearer.split()[1]
+    return flask_response

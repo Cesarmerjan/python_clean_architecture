@@ -3,7 +3,7 @@ from marshmallow.exceptions import ValidationError
 from .exception import RequestDataException
 from .base import BaseRequestDataParser
 
-from src.make_a_comment.serializer.user import user_serializer
+from src.make_a_comment.adapters.serializer.user import user_serializer
 
 
 class UserRequestParser(BaseRequestDataParser):

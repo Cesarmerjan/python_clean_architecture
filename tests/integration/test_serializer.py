@@ -1,7 +1,7 @@
 from src.make_a_comment.domain.comment import Comment
-from src.make_a_comment.serializer.comment import comment_serializer
+from src.make_a_comment.adapters.serializer.comment import comment_serializer
 from src.make_a_comment.domain.user import User
-from src.make_a_comment.serializer.user import user_serializer
+from src.make_a_comment.adapters.serializer.user import user_serializer
 
 
 def test_comment_serializer_load():

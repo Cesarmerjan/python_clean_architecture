@@ -2,7 +2,7 @@ import traceback
 from src.make_a_comment.adapters.output.basic import BasicOutput
 from src.make_a_comment.adapters.unit_of_work.interface import UoWInterface
 
-from src.make_a_comment.serializer.user import user_serializer
+from src.make_a_comment.adapters.serializer.user import user_serializer
 
 # from src.make_a_comment.exceptions.missing_data_on_request import MissingUserUuid
 from marshmallow import ValidationError

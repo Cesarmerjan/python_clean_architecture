@@ -2,7 +2,7 @@ import traceback
 from src.make_a_comment.adapters.output.basic import BasicOutput
 from src.make_a_comment.adapters.unit_of_work.interface import UoWInterface
 
-from src.make_a_comment.serializer.comment import comment_serializer
+from src.make_a_comment.adapters.serializer.comment import comment_serializer
 
 from sqlalchemy.exc import SQLAlchemyError
 

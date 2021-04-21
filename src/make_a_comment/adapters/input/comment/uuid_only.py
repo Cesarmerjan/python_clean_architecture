@@ -1,5 +1,5 @@
 from src.make_a_comment.adapters.input.interface import InputInterface
-from src.make_a_comment.serializer.comment import comment_serializer
+from src.make_a_comment.adapters.serializer.comment import comment_serializer
 
 
 class CommentUuidOnlyInput(InputInterface):

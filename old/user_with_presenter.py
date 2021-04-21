@@ -43,6 +43,9 @@ class UserService(UserServiceInterface):
     @build_response(ResponseType.CREATED)
     def register_user(self, *args, **kwargs) -> Response:
         return self._register_user(*args, **kwargs)
+        # response = self.presenter.build_response(
+        #     self._register_user, ResponseType.CREATED)(*args, **kwargs)
+        # return response
 
     def _register_user(self, name: str, email: str, password: str, admin: bool = None) -> User:
         with self.uow:
@@ -53,9 +56,10 @@ class UserService(UserServiceInterface):
             self.uow.commit()
         return user_copy
 
-    @build_response(ResponseType.SUCCESS)
     def get_user_by_uuid(self, *args, **kwargs) -> Response:
-        return self._get_user_by_uuid(*args, **kwargs)
+        response = self.presenter.build_response(
+            self._get_user_by_uuid, ResponseType.SUCCESS)(*args, **kwargs)
+        return response
 
     def _get_user_by_uuid(self, user_uuid: "User.uuid") -> User:
         with self.uow:
@@ -68,10 +72,12 @@ class UserService(UserServiceInterface):
             user_copy = deepcopy(user)
         return user_copy
 
-    @build_response(ResponseType.CREATED)
     @login_required
     def make_a_comment(self, access_token, *args, **kwargs) -> Response:
-        return self._make_a_comment(*args, **kwargs)
+        response = self.presenter.build_response(
+            self._make_a_comment,
+            ResponseType.CREATED)(*args, **kwargs)
+        return response
 
     def _make_a_comment(self, user_uuid: "User.uuid", text: str) -> Comment:
         with self.uow:
@@ -83,9 +89,10 @@ class UserService(UserServiceInterface):
             self.uow.commit()
         return comment_copy
 
-    @build_response(ResponseType.SUCCESS)
     def login(self, *args, **kwargs) -> Response:
-        return self._login(*args, **kwargs)
+        response = self.presenter.build_response(
+            self._login, ResponseType.SUCCESS)(*args, **kwargs)
+        return response
 
     def _login(self, email: "User.email", password: str) -> dict:
         with self.uow:
@@ -100,10 +107,11 @@ class UserService(UserServiceInterface):
 
         return {"access_token": access_token}
 
-    @build_response(ResponseType.SUCCESS)
     @login_required
     def logout(self, access_token, *args, **kwargs) -> Response:
-        return self._logout(access_token)
+        response = self.presenter.build_response(
+            self._logout, ResponseType.SUCCESS)(access_token)
+        return response
 
     def _logout(self, access_token: str) -> None:
         ACCESS_TOKEN_BLACKLIST.add(access_token)

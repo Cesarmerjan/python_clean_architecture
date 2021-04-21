@@ -1,18 +1,28 @@
-from flask import request, jsonify, make_response
-from src.make_a_comment.adapters import controller
-from src.make_a_comment.adapters.unit_of_work.user_uow import UserUoW
+from flask import request, jsonify, current_app, make_response
+from src.make_a_comment.adapters.response.status_code import STATUS_CODE
+from src.make_a_comment.adapters.controller.factory import ControllerFactory
 
 
 def logout():
+    request_json = request.get_json()
+    request_json = {} if not request_json else request_json
+
     access_token = request.cookies.get("access_token")
 
-    controller.user_logout(access_token=access_token)
+    request_json["access_token"] = access_token
 
-    response = make_response("ok")
-    response.set_cookie(key="access_token",
-                        value="",
-                        httponly=True,
-                        max_age=0,
-                        expires=0)
+    controller = ControllerFactory("user_logout",
+                                   current_app.session_factory)
 
-    return response, 200
+    response = controller.handle(request_json)
+
+    flask_response = make_response(jsonify(response.payload),
+                                   STATUS_CODE[response.kind])
+
+    flask_response.set_cookie(key="access_token",
+                              value="",
+                              httponly=True,
+                              max_age=0,
+                              expires=0)
+
+    return flask_response

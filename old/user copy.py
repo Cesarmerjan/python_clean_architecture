@@ -15,36 +15,34 @@ from src.make_a_comment.adapters.presenter.interface import PresenterInterface
 from src.make_a_comment.adapters.unit_of_work.interface import UoWInterface
 
 from src.make_a_comment.adapters.response.type import ResponseType
-from src.make_a_comment.adapters.response.basic import Response
-
-from src.make_a_comment.adapters.response.custom_typing import PositiveResponse
-
-from .login_required import login_required
 
 
 class UserService(UserServiceInterface):
 
-    def __init__(self, user_uow: UoWInterface, presenter: PresenterInterface):
+    presenter = None
+
+    def __init__(self, user_uow: UoWInterface, presenter: PresenterInterface = None):
         self.uow = user_uow
         self.presenter = presenter
 
-    def build_response(positive_response: PositiveResponse):
+    def build_response(response_type: ResponseType):
         def inner_function(function):
             @wraps(function)
             def wrapper(self, *args, **kwargs):
-                response = self.presenter.build_response(
-                    function,
-                    positive_response
-                )(self, *args, **kwargs)
+                if self.presenter:
+                    response = self.presenter.build_response(
+                        function,
+                        response_type
+                    )(self, *args, **kwargs)
+                else:
+                    response = function(self, *args, **kwargs)
                 return response
             return wrapper
         return inner_function
 
+    # create_a_user
     @build_response(ResponseType.CREATED)
-    def register_user(self, *args, **kwargs) -> Response:
-        return self._register_user(*args, **kwargs)
-
-    def _register_user(self, name: str, email: str, password: str, admin: bool = None) -> User:
+    def register_user(self, name: str, email: str, password: str, admin: bool = None) -> User:
         with self.uow:
             user = self.uow.repository.add(
                 User(name, email, password, admin)
@@ -53,11 +51,8 @@ class UserService(UserServiceInterface):
             self.uow.commit()
         return user_copy
 
-    @build_response(ResponseType.SUCCESS)
-    def get_user_by_uuid(self, *args, **kwargs) -> Response:
-        return self._get_user_by_uuid(*args, **kwargs)
-
-    def _get_user_by_uuid(self, user_uuid: "User.uuid") -> User:
+    @build_response
+    def get_user_by_uuid(self, user_uuid: "User.uuid") -> User:
         with self.uow:
             user = self.uow.repository.get_by(uuid=user_uuid)
             # This (user.comments) needs to be here because of the relationship
@@ -68,12 +63,8 @@ class UserService(UserServiceInterface):
             user_copy = deepcopy(user)
         return user_copy
 
-    @build_response(ResponseType.CREATED)
-    @login_required
-    def make_a_comment(self, access_token, *args, **kwargs) -> Response:
-        return self._make_a_comment(*args, **kwargs)
-
-    def _make_a_comment(self, user_uuid: "User.uuid", text: str) -> Comment:
+    @build_response
+    def make_a_comment(self, user_uuid: "User.uuid", text: str) -> Comment:
         with self.uow:
             user = self.uow.repository.get_by(uuid=user_uuid)
             comment = Comment(text)
@@ -83,11 +74,8 @@ class UserService(UserServiceInterface):
             self.uow.commit()
         return comment_copy
 
-    @build_response(ResponseType.SUCCESS)
-    def login(self, *args, **kwargs) -> Response:
-        return self._login(*args, **kwargs)
-
-    def _login(self, email: "User.email", password: str) -> dict:
+    @build_response
+    def login(self, email: "User.email", password: str) -> "access_token":
         with self.uow:
             user = self.uow.repository.get_by(email=email)
 
@@ -98,14 +86,10 @@ class UserService(UserServiceInterface):
 
             access_token = generate_access_token(payload)
 
-        return {"access_token": access_token}
+        return access_token
 
-    @build_response(ResponseType.SUCCESS)
-    @login_required
-    def logout(self, access_token, *args, **kwargs) -> Response:
-        return self._logout(access_token)
-
-    def _logout(self, access_token: str) -> None:
+    @build_response
+    def logout(self, access_token: str) -> None:
         ACCESS_TOKEN_BLACKLIST.add(access_token)
 
     @staticmethod

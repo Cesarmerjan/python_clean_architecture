@@ -2,7 +2,7 @@ import traceback
 from src.make_a_comment.adapters.output.basic import BasicOutput
 from src.make_a_comment.adapters.unit_of_work.interface import UoWInterface
 
-from src.make_a_comment.serializer.comment import comment_serializer
+from src.make_a_comment.adapters.serializer.comment import comment_serializer
 
 from src.make_a_comment.exceptions.user_uuid_is_not_in_the_access_token_payload import UserUuidIsNotInAccessTokenPayload
 from marshmallow import ValidationError

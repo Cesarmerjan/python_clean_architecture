@@ -77,7 +77,7 @@ def session_factory(engine, mapper):
 
 @pytest.fixture
 def api(connection, mapper):
-    api = create_api('test')
+    api = create_api("test")
     api_context = api.app_context()
     api_context.push()
     yield api
